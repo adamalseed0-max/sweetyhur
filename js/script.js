@@ -323,9 +323,10 @@
         var savedName = getVisitorName();
         if (savedName) {
             applyVisitorWelcome(savedName);
-            setToast("مرحبًا بعودتك يا " + savedName);
+            closeVisitorNameModal();
+        } else {
+            openVisitorNameModal();
         }
-        openVisitorNameModal();
 
         overlayEl.addEventListener("click", function (e) {
             if (e.target === overlayEl) {
