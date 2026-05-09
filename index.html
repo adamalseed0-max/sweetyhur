@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="سويتي حور — حلويات، سكاكر، وهدايا مغلفة بجودة عالية. تسوق أونلاين أو زرنا.">
+    <title>Swetty Huar | حلويات وهدايا مغلفة</title>
+    <link rel="icon" href="images/hur-sweets-logo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <a class="skip-link" href="#main">تخطي إلى المحتوى</a>
+
+    <header class="site-header" id="top">
+        <div class="header-word-cloud" aria-hidden="true"></div>
+        <div class="header-inner">
+            <a class="logo" href="#top" aria-label="Hur Sweets — الصفحة الرئيسية">
+                <img class="logo-img" src="images/hur-sweets-logo.png" width="48" height="48" alt="" decoding="async">
+            </a>
+            <nav class="site-nav" id="site-nav" aria-label="التنقل الرئيسي">
+                <a href="#about">من نحن</a>
+                <a href="#products">المنتجات</a>
+                <a href="#why">لماذا نحن</a>
+                <a href="#store-map-wrap">موقعنا</a>
+                <a href="#contact" class="nav-cta">اطلب الآن</a>
+            </nav>
+            <div class="header-tools">
+                <button type="button" class="cart-toggle" id="cart-toggle" aria-expanded="false" aria-controls="cart-drawer" aria-label="سلة المشتريات">
+                    <svg class="cart-toggle-icon" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1.003 1.003 0 0 0 20 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                    <span class="cart-toggle-count" id="cart-badge" hidden>0</span>
+                </button>
+                <button type="button" class="coffee-moment-trigger" id="coffee-moment-open" aria-haspopup="dialog" aria-controls="coffee-moment-modal" title="جديد في المتجر — طحن القهوة" aria-label="جديد في المتجر، طحن القهوة">
+                    <span class="coffee-moment-trigger-ring" aria-hidden="true"></span>
+                    <svg class="coffee-moment-trigger-icon" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 20h9a1 1 0 0 0 1-1v-1H6.5v1a1 1 0 0 0 1 1Z"/><path d="M9 18V11a3 3 0 0 1 3-3h0a3 3 0 0 1 3 3v7"/><path d="M8 11h8"/><path d="M8.5 8.5h7a1.5 1.5 0 0 0 1.5-1.5V7H7v0a1.5 1.5 0 0 0 1.5 1.5Z"/><path d="M12 4V2"/><path d="M10 4h4"/><path d="M18.5 6.5 20 5.5"/></svg>
+                    <span class="coffee-new-badge" aria-hidden="true">جديد</span>
+                </button>
+                <button type="button" class="inventory-admin-trigger" id="inventory-admin-open" aria-haspopup="dialog" aria-controls="inventory-admin-modal" title="إدارة المنتجات" aria-label="إدارة المنتجات والمخزون">
+                    <svg class="inventory-admin-icon" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="m21.67 18.17-1.53-1.32c.13-.68.13-1.37 0-2.05l1.53-1.32a.5.5 0 0 0 .11-.63l-1.45-2.5a.5.5 0 0 0-.6-.22l-1.92.77a7.1 7.1 0 0 0-1.77-1.03l-.29-2.05a.5.5 0 0 0-.5-.42h-2.9a.5.5 0 0 0-.49.42l-.29 2.05c-.63.23-1.22.58-1.77 1.03l-1.92-.77a.5.5 0 0 0-.6.22l-1.45 2.5a.5.5 0 0 0 .11.63l1.53 1.32a6.7 6.7 0 0 0 0 2.05l-1.53 1.32a.5.5 0 0 0-.11.63l1.45 2.5a.5.5 0 0 0 .6.22l1.92-.77c.55.45 1.14.8 1.77 1.03l.29 2.05a.5.5 0 0 0 .49.42h2.9a.5.5 0 0 0 .5-.42l.29-2.05c.63-.23 1.22-.58 1.77-1.03l1.92.77a.5.5 0 0 0 .6-.22l1.45-2.5a.5.5 0 0 0-.11-.63ZM12 15.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"/></svg>
+                </button>
+                <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="فتح القائمة">
+                    <span class="nav-toggle-bar"></span>
+                    <span class="nav-toggle-bar"></span>
+                    <span class="nav-toggle-bar"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="main">
+        <section class="hero" aria-labelledby="hero-title">
+            <div class="hero-bg" aria-hidden="true"></div>
+            <div class="hero-floats" aria-hidden="true">
+                <div class="hero-float hero-float--1">
+                    <img src="https://images.unsplash.com/photo-1481391319762-47dff72954d9?w=200&q=75" alt="" width="120" height="120" loading="eager" decoding="async">
+                </div>
+                <div class="hero-float hero-float--2">
+                    <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=200&q=75" alt="" width="120" height="120" loading="eager" decoding="async">
+                </div>
+                <div class="hero-float hero-float--3">
+                    <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=200&q=75" alt="" width="120" height="120" loading="eager" decoding="async">
+                </div>
+                <div class="hero-float hero-float--4">
+                    <img src="https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=200&q=75" alt="" width="120" height="120" loading="eager" decoding="async">
+                </div>
+                <div class="hero-float hero-float--5">
+                    <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=200&q=75" alt="" width="120" height="120" loading="eager" decoding="async">
+                </div>
+                <div class="hero-float hero-float--6">
+                    <img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=200&q=75" alt="" width="120" height="120" loading="eager" decoding="async">
+                </div>
+            </div>
+            <div class="hero-content">
+                <p class="hero-eyebrow">حلويات وسكاكر وهدايا مغلفة — جودة تليق بذوقك</p>
+                <p class="hero-welcome" id="hero-welcome" hidden></p>
+                <h1 id="hero-title">طعم يبقى في الذاكرة</h1>
+                <p class="hero-lead">نختار لكم الأجود، ونقدّمها بعناية لتكون مناسبتكم أحلى — من الشوكولاتة والسكاكر إلى علب الهدايا الملفوفة بإتقان.</p>
+                <div class="hero-actions">
+                    <a class="btn btn-primary" href="#products">استكشف المنتجات</a>
+                    <a class="btn btn-ghost" href="#contact">تواصل معنا</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats reveal" id="stats" aria-label="أرقام سريعة">
+            <div class="stats-inner">
+                <div class="stat">
+                    <span class="stat-value" data-count="8">0</span>
+                    <span class="stat-suffix">+</span>
+                    <span class="stat-label">سنوات خبرة</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value" data-count="1200">0</span>
+                    <span class="stat-suffix">+</span>
+                    <span class="stat-label">عميل راضٍ</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value" data-count="50">0</span>
+                    <span class="stat-suffix">+</span>
+                    <span class="stat-label">صنف متنوع</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value" id="stat-site-visitors" data-count="0" data-visitor-fallback="0">0</span>
+                    <span class="stat-suffix">+</span>
+                    <span class="stat-label">زيارات الموقع</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="section about reveal" id="about">
+            <div class="section-header">
+                <span class="section-tag">من نحن</span>
+                <h2>سويتي حور — أكثر من متجر</h2>
+            </div>
+            <div class="about-grid">
+                <div class="about-text">
+                    <p>مرحباً بكم في <strong>سويتي حور</strong>. لسنا مجرد مكان للشراء، بل وجهة للسعادة والطعم الأصيل؛ حيث تلتقي روائح الفانيليا والزبدة الطازجة لتأسر الحواس.</p>
+                    <p>نقدّم تشكيلة واسعة من الحلويات والكيك والشوكولاتة المصنوعة بحب، إضافة إلى هدايا مغلفة وتوزيعات سكاكر جاهزة للمناسبات — جودة ثابتة تناسب كل الأذواق.</p>
+                    <ul class="about-list">
+                        <li>مكونات مختارة بعناية</li>
+                        <li>تغليف أنيق وهدايا جاهزة</li>
+                        <li>استفسارات سريعة عبر الهاتف والبريد</li>
+                    </ul>
+                </div>
+                <div class="about-card" role="img" aria-label="لمسة بصرية دافئة للعلامة">
+                    <div class="about-card-inner">
+                        <span class="about-card-quote">«الجودة ليست خياراً — إنها عادتنا»</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section products-section reveal" id="products">
+            <div class="section-header">
+                <span class="section-tag">المنتجات</span>
+                <h2>مختاراتنا لكم</h2>
+                <p class="section-sub">اختر التصنيف لعرض الصور والأسعار — أسعار إرشادية، وللطلب تواصل معنا.</p>
+            </div>
+
+            <div class="category-nav-grid">
+                <a class="category-nav-card" href="halawiyat.html">
+                    <span class="category-nav-icon" aria-hidden="true">🍫</span>
+                    <h3>الحلويات</h3>
+                    <p>شوكولاتة، غومي، مصاصات وسكاكر متنوعة.</p>
+                    <span class="category-nav-cta">عرض الصور والأسعار</span>
+                </a>
+                <a class="category-nav-card" href="hadaya.html">
+                    <span class="category-nav-icon" aria-hidden="true">🎁</span>
+                    <h3>هدايا مغلفة وتوزيعات</h3>
+                    <p>علب هدايا، طرود مغلفة، وتوزيعات للمناسبات.</p>
+                    <span class="category-nav-cta">عرض الصور والأسعار</span>
+                </a>
+            </div>
+        </section>
+
+        <section class="section why reveal" id="why">
+            <div class="section-header">
+                <span class="section-tag">لماذا نحن</span>
+                <h2>ما الذي يميز تجربتك معنا؟</h2>
+            </div>
+            <div class="features-grid">
+                <article class="feature-card">
+                    <div class="feature-card-main" role="button" tabindex="0" aria-expanded="false" aria-controls="feature-rating-quality">
+                        <span class="feature-icon" aria-hidden="true">✦</span>
+                        <h3 id="feature-title-quality">جودة ثابتة</h3>
+                        <p>نراقب الموردين ونفضّل المنتجات ذات السمعة الجيدة.</p>
+                        <span class="feature-rating-hint">اضغط لعرض التقييم</span>
+                    </div>
+                    <div class="feature-rating-panel" id="feature-rating-quality" hidden role="region" aria-labelledby="feature-title-quality">
+                        <p class="feature-rating-prompt">قيّم «جودة ثابتة»</p>
+                        <div class="feature-stars" role="group" aria-label="من 1 إلى 5 نجوم" dir="ltr">
+                            <button type="button" class="feature-star-btn" data-value="1" aria-label="نجمة واحدة من خمس" aria-pressed="false">★</button>
+                            <button type="button" class="feature-star-btn" data-value="2" aria-label="نجمتان من خمس" aria-pressed="false">★</button>
+                            <button type="button" class="feature-star-btn" data-value="3" aria-label="ثلاث نجوم من خمس" aria-pressed="false">★</button>
+                            <button type="button" class="feature-star-btn" data-value="4" aria-label="أربع نجوم من خمس" aria-pressed="false">★</button>
+                            <button type="button" class="feature-star-btn" data-value="5" aria-label="خمس نجوم" aria-pressed="false">★</button>
+                        </div>
+                        <p class="feature-rating-result" role="status" aria-live="polite"></p>
+                    </div>
+                </article>
+                <article class="feature-card">
+                    <div class="feature-card-main" role="button" tabindex="0" aria-expanded="false" aria-controls="feature-rating-packaging">
+                        <span class="feature-icon" aria-hidden="true">◇</span>
+                        <h3 id="feature-title-packaging">تغليف أنيق</h3>
+                        <p>مناسب للهدايا والمناسبات دون عناء إضافي.</p>
+                        <span class="feature-rating-hint">اضغط لعرض التقييم</span>
+                    </div>
+                    <div class="feature-rating-panel" id="feature-rating-packaging" hidden role="region" aria-labelledby="feature-title-packaging">
+                        <p class="feature-rating-prompt">قيّم «تغليف أنيق»</p>
+                        <div class="feature-stars" role="group" aria-label="من 1 إلى 5 نجوم" dir="ltr">
+                            <button type="button" class="feature-star-btn" data-value="1" aria-label="نجمة واحدة من خمس" aria-pressed="false">★</button>
+                            <button type="button" class="feature-star-btn" data-value="2" aria-label="نجمتان من خمس" aria-pressed="false">★</button>
+                            <button type="button" class="feature-star-btn" data-value="3" aria-label="ثلاث نجوم من خمس" aria-pressed="false">★</button>
+                            <button type="button" class="feature-star-btn" data-value="4" aria-label="أربع نجوم من خمس" aria-pressed="false">★</button>
+                            <button type="button" class="feature-star-btn" data-value="5" aria-label="خمس نجوم" aria-pressed="false">★</button>
+                        </div>
+                        <p class="feature-rating-result" role="status" aria-live="polite"></p>
+                    </div>
+                </article>
+                <article class="feature-card">
+                    <div class="feature-card-main" role="button" tabindex="0" aria-expanded="false" aria-controls="feature-rating-support">
+                        <span class="feature-icon" aria-hidden="true">◎</span>
+                        <h3 id="feature-title-support">دعم سريع</h3>
+                        <p>فريق جاهز للإجابة عن استفساراتكم والكميات.</p>
+                        <span class="feature-rating-hint">اضغط لعرض التقييم</span>
+                    </div>
+                    <div class="feature-rating-panel" id="feature-rating-support" hidden role="region" aria-labelledby="feature-title-support">
+                        <p class="feature-rating-prompt">قيّم «دعم سريع»</p>
+                        <div class="feature-stars" role="group" aria-label="من 1 إلى 5 نجوم" dir="ltr">
+                            <button type="button" class="feature-star-btn" data-value="1" aria-label="نجمة واحدة من خمس" aria-pressed="false">★</button>
+                            <button type="button" class="feature-star-btn" data-value="2" aria-label="نجمتان من خمس" aria-pressed="false">★</button>
+                            <button type="button" class="feature-star-btn" data-value="3" aria-label="ثلاث نجوم من خمس" aria-pressed="false">★</button>
+                            <button type="button" class="feature-star-btn" data-value="4" aria-label="أربع نجوم من خمس" aria-pressed="false">★</button>
+                            <button type="button" class="feature-star-btn" data-value="5" aria-label="خمس نجوم" aria-pressed="false">★</button>
+                        </div>
+                        <p class="feature-rating-result" role="status" aria-live="polite"></p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="section contact-section reveal" id="contact">
+            <div class="section-header">
+                <span class="section-tag">تواصل</span>
+                <h2>لنبدأ طلبك</h2>
+                <p class="section-sub">أرسل رسالة أو اتصل بنا — نرد في أقرب وقت.</p>
+            </div>
+            <div class="contact-grid" id="contact-grid">
+                <div class="contact-cards">
+                    <a class="contact-card" href="mailto:hursweety@gmail.com">
+                        <span class="contact-label">البريد</span>
+                        <span class="contact-value" dir="ltr">hursweety@gmail.com</span>
+                    </a>
+                    <a class="contact-card" href="tel:+972507209096">
+                        <span class="contact-label">الهاتف</span>
+                        <span class="contact-value" dir="ltr">050-7209096</span>
+                    </a>
+                    <div class="contact-card contact-card-static">
+                        <span class="contact-label">العنوان</span>
+                        <span class="contact-value">حوره، شارع السلام، بجانب ليا فارم</span>
+                    </div>
+                    <a class="contact-card contact-card-whatsapp" href="https://wa.me/972507209096?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D8%8C%20%D8%A3%D8%B1%D8%BA%D8%A8%20%D8%A8%D8%A7%D9%84%D8%B7%D9%84%D8%A8%20%D8%B9%D9%86%20%D9%85%D9%86%D8%AA%D8%AC%D8%A7%D8%AA%20%D8%B3%D9%88%D9%8A%D8%AA%D9%8A%20%D8%AD%D9%88%D8%B1" target="_blank" rel="noopener noreferrer" aria-label="مراسلتنا على واتساب">
+                        <span class="contact-label contact-label-with-icon">
+                            <svg class="icon-whatsapp" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.435 9.884-9.884 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.892-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+                            واتساب
+                        </span>
+                        <span class="contact-value">إرسال طلب أو استفسار عبر واتساب</span>
+                    </a>
+                </div>
+                <!-- Formspree: استبدل YOUR_FORM_ID بمعرّف النموذج من https://formspree.io (مثال: https://formspree.io/f/xyzabcqr) -->
+                <form class="contact-form" id="contact-form" action="https://formspree.io/f/xdabajlk" method="POST" novalidate>
+                    <input type="hidden" name="_subject" value="طلب تواصل من موقع Swetty Huar">
+                    <label for="name">الاسم</label>
+                    <input type="text" id="name" name="name" autocomplete="name" placeholder="اسمك الكريم" required>
+
+                    <label for="email">البريد الإلكتروني</label>
+                    <input type="email" id="email" name="email" autocomplete="email" placeholder="you@example.com" required>
+
+                    <label for="message">الرسالة</label>
+                    <textarea id="message" name="message" rows="4" placeholder="اذكر المنتج والكمية إن أمكن" required></textarea>
+                    <button type="submit" class="btn btn-primary btn-block">إرسال الطلب</button>
+                    <p class="form-note" role="status" aria-live="polite" id="form-status"></p>
+                </form>
+            </div>
+        </section>
+
+        <section class="section site-map-section reveal" id="store-map-wrap" aria-labelledby="site-map-title">
+            <div class="section-header">
+                <span class="section-tag">العنوان</span>
+                <h2 id="site-map-title">موقعنا</h2>
+            </div>
+            <div class="site-map-fullbleed">
+                <iframe
+                    class="site-map-iframe"
+                    title="موقع سويتي حور على Google Maps"
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"
+                    allowfullscreen
+                    src="https://www.google.com/maps?q=%D8%AD%D9%88%D8%B1%D9%87%D8%8C%20%D8%B4%D8%A7%D8%B1%D8%B9%20%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%D8%8C%20%D8%A8%D8%AC%D8%A7%D9%86%D8%A8%20%D9%84%D9%8A%D8%A7%20%D9%81%D8%A7%D8%B1%D9%85&amp;hl=ar&amp;z=18&amp;output=embed"></iframe>
+                <p class="site-map-foot">
+                    <a class="site-map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%D8%AD%D9%88%D8%B1%D9%87%D8%8C%20%D8%B4%D8%A7%D8%B1%D8%B9%20%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%D8%8C%20%D8%A8%D8%AC%D8%A7%D9%86%D8%A8%20%D9%84%D9%8A%D8%A7%20%D9%81%D8%A7%D8%B1%D9%85&amp;hl=ar" target="_blank" rel="noopener noreferrer">فتح الموقع في Google Maps</a>
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <strong>Swetty Huar</strong>
+                <p>عشق الحلوى في كل لقمة.</p>
+            </div>
+            <nav class="footer-social" aria-label="حسابات التواصل الاجتماعي">
+                <p class="footer-social-title">تابعونا</p>
+                <ul class="footer-social-list">
+                    <li>
+                        <a class="footer-social-link" href="https://wa.me/972507209096?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D8%8C%20%D8%A3%D8%B1%D8%BA%D8%A8%20%D8%A8%D8%A7%D9%84%D8%B7%D9%84%D8%A8%20%D8%B9%D9%86%20%D9%85%D9%86%D8%AA%D8%AC%D8%A7%D8%AA%20%D8%B3%D9%88%D9%8A%D8%AA%D9%8A%20%D8%AD%D9%88%D8%B1" target="_blank" rel="noopener noreferrer" aria-label="واتساب">
+                            <svg class="footer-social-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.123 1.036 6.988 2.918a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="footer-social-link" href="https://www.instagram.com/hursweety/" target="_blank" rel="noopener noreferrer" aria-label="إنستغرام">
+                            <svg class="footer-social-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M12 2.163c3.204 0 3.584.012 4.85.07 1.252.058 1.913.242 2.362.403.59.23 1.011.505 1.453.947.442.442.716.863.946 1.454.16.449.344 1.11.402 2.363.059 1.265.072 1.646.072 4.85s-.013 3.585-.072 4.85c-.058 1.252-.242 1.912-.402 2.363-.23.59-.504 1.011-.946 1.453-.442.442-.863.717-1.454.947-.448.16-1.11.344-2.363.402-1.266.058-1.646.072-4.85.072s-3.585-.014-4.85-.072c-1.252-.058-1.913-.242-2.363-.402a3.917 3.917 0 0 1-1.453-.947 3.917 3.917 0 0 1-.947-1.454c-.16-.449-.344-1.11-.402-2.363-.059-1.265-.07-1.646-.07-4.85s.011-3.585.07-4.85c.058-1.252.242-1.912.402-2.363.23-.59.505-1.011.947-1.454a3.88 3.88 0 0 1 1.454-.946c.449-.161 1.11-.345 2.363-.403 1.266-.059 1.646-.07 4.85-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-1.278.06-2.148.262-2.91.558a5.898 5.898 0 0 0-2.13 1.39 5.86 5.86 0 0 0-1.39 2.127C.262 3.907.06 4.777.002 6.055-.058 7.333-.045 7.74-.045 11s-.013 3.667.072 4.947.262 2.148.558 2.91a5.9 5.9 0 0 0 1.39 2.13 5.73 5.73 0 0 0 2.127 1.39c.763.296 1.632.498 2.91.558 1.28.06 1.688.072 4.947.072s3.668-.014 4.947-.072c1.278-.06 2.148-.262 2.91-.558a5.9 5.9 0 0 0 2.13-1.39 5.73 5.73 0 0 0 1.39-2.127c.296-.763.498-1.632.558-2.91.06-1.28.072-1.688.072-4.947s-.014-3.667-.072-4.947c-.06-1.278-.262-2.148-.558-2.91a5.9 5.9 0 0 0-1.39-2.13 5.73 5.73 0 0 0-2.127-1.39c-.763-.296-1.632-.498-2.91-.558-1.28-.059-1.688-.072-4.947-.072zm0 5.838a6.162 6.162 0 1 0 6.162 6.162A6.162 6.162 0 0 0 12 5.838zm0 10.162a4 4 0 1 1 4-4 4 4 0 0 1-4 4zm6.406-11.845a1.44 1.44 0 1 1-1.44 1.44 1.44 1.44 0 0 1 1.44-1.44z"/></svg>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="footer-social-link" href="https://www.facebook.com/profile.php?id=61589121675438" target="_blank" rel="noopener noreferrer" aria-label="فيسبوك">
+                            <svg class="footer-social-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="footer-social-link" href="https://www.tiktok.com/@hursweety" target="_blank" rel="noopener noreferrer" aria-label="تيك توك">
+                            <svg class="footer-social-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="footer-end">
+                <a class="footer-map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%D8%AD%D9%88%D8%B1%D9%87%D8%8C%20%D8%B4%D8%A7%D8%B1%D8%B9%20%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%D8%8C%20%D8%A8%D8%AC%D8%A7%D9%86%D8%A8%20%D9%84%D9%8A%D8%A7%20%D9%81%D8%A7%D8%B1%D9%85&amp;hl=ar" target="_blank" rel="noopener noreferrer" aria-label="موقعنا على Google Maps">
+                    <svg class="footer-map-icon" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9.25" fill="none" stroke="currentColor" stroke-width="1.6"/><ellipse cx="12" cy="12" rx="3.75" ry="9.25" fill="none" stroke="currentColor" stroke-width="1.45"/><path fill="none" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" d="M3.25 12h17.5"/><path fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" d="M12 2.75c2.2 2.65 3.4 6.05 3.4 9.25S14.2 18.6 12 21.25M12 2.75C9.8 5.4 8.6 8.8 8.6 12s1.2 6.6 3.4 9.25"/></svg>
+                    <span>موقعنا</span>
+                </a>
+                <p class="footer-copy">&copy; <span id="year"></span> Swetty Huar. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="coffee-moment-overlay" id="coffee-moment-overlay" aria-hidden="true"></div>
+    <div class="coffee-moment-modal" id="coffee-moment-modal" role="dialog" aria-modal="true" aria-labelledby="coffee-moment-title" aria-hidden="true">
+        <button type="button" class="coffee-moment-close" id="coffee-moment-close" aria-label="إغلاق">×</button>
+        <h2 id="coffee-moment-title" class="coffee-moment-title">طحن القهوة</h2>
+        <p class="coffee-moment-lead">أُضيف جديد في المتجر — نرحّب بك لاكتشافه.</p>
+        <fieldset class="coffee-bag-fieldset" id="coffee-bag-fieldset">
+            <legend class="coffee-bag-legend">اختر حجم الكيس للطحن</legend>
+            <div class="coffee-bag-grid" role="presentation">
+                <label class="coffee-bag-option coffee-bag-tier--1">
+                    <input type="radio" name="coffee-grind-bag" value="1000" data-id="grind-1kg" data-name="طحن قهوة — 1 kg" data-price="38">
+                    <span class="coffee-bag-option-inner">
+                        <span class="coffee-bag-pouch" aria-hidden="true"></span>
+                        <span class="coffee-bag-weight" lang="en" dir="ltr">1 kg</span>
+                    </span>
+                </label>
+                <label class="coffee-bag-option coffee-bag-tier--2">
+                    <input type="radio" name="coffee-grind-bag" value="500" data-id="grind-500g" data-name="طحن قهوة — 500 g" data-price="22">
+                    <span class="coffee-bag-option-inner">
+                        <span class="coffee-bag-pouch" aria-hidden="true"></span>
+                        <span class="coffee-bag-weight" lang="en" dir="ltr">500 g</span>
+                    </span>
+                </label>
+                <label class="coffee-bag-option coffee-bag-tier--3">
+                    <input type="radio" name="coffee-grind-bag" value="250" checked data-id="grind-250g" data-name="طحن قهوة — 250 g" data-price="12">
+                    <span class="coffee-bag-option-inner">
+                        <span class="coffee-bag-pouch" aria-hidden="true"></span>
+                        <span class="coffee-bag-weight" lang="en" dir="ltr">250 g</span>
+                    </span>
+                </label>
+                <label class="coffee-bag-option coffee-bag-tier--4">
+                    <input type="radio" name="coffee-grind-bag" value="150" data-id="grind-150g" data-name="طحن قهوة — 150 g" data-price="9">
+                    <span class="coffee-bag-option-inner">
+                        <span class="coffee-bag-pouch" aria-hidden="true"></span>
+                        <span class="coffee-bag-weight" lang="en" dir="ltr">150 g</span>
+                    </span>
+                </label>
+                <label class="coffee-bag-option coffee-bag-tier--5">
+                    <input type="radio" name="coffee-grind-bag" value="100" data-id="grind-100g" data-name="طحن قهوة — 100 g" data-price="6.5">
+                    <span class="coffee-bag-option-inner">
+                        <span class="coffee-bag-pouch" aria-hidden="true"></span>
+                        <span class="coffee-bag-weight" lang="en" dir="ltr">100 g</span>
+                    </span>
+                </label>
+                <label class="coffee-bag-option coffee-bag-tier--6">
+                    <input type="radio" name="coffee-grind-bag" value="50" data-id="grind-50g" data-name="طحن قهوة — 50 g" data-price="4">
+                    <span class="coffee-bag-option-inner">
+                        <span class="coffee-bag-pouch" aria-hidden="true"></span>
+                        <span class="coffee-bag-weight" lang="en" dir="ltr">50 g</span>
+                    </span>
+                </label>
+            </div>
+        </fieldset>
+        <div class="coffee-moment-actions">
+            <p class="coffee-moment-price-row">
+                <span class="coffee-moment-price-label">السعر التقريبي:</span>
+                <span class="coffee-moment-price" id="coffee-moment-price" dir="ltr">12.00</span>
+                <span class="coffee-moment-currency">شيكل</span>
+            </p>
+            <button type="button" class="btn btn-primary btn-block" id="coffee-add-to-cart">أضف للسلة</button>
+        </div>
+        <span id="coffee-grind-live" class="visually-hidden" aria-live="polite"></span>
+    </div>
+
+    <div class="cart-overlay" id="cart-overlay" aria-hidden="true"></div>
+    <aside class="cart-drawer" id="cart-drawer" aria-hidden="true" aria-labelledby="cart-drawer-title">
+        <div class="cart-drawer-head">
+            <h2 id="cart-drawer-title">سلة المشتريات</h2>
+            <button type="button" class="cart-drawer-close" id="cart-close" aria-label="إغلاق السلة">×</button>
+        </div>
+        <div class="cart-drawer-body" id="cart-lines"></div>
+        <div class="cart-drawer-foot">
+            <p class="cart-total"><span>الإجمالي التقريبي</span> <strong id="cart-total-value" dir="ltr">0.00</strong> <small>شيكل</small></p>
+            <button type="button" class="btn btn-ghost btn-block" id="cart-clear">تفريغ السلة</button>
+            <button type="button" class="btn btn-primary btn-block" id="cart-checkout">إتمام الطلب</button>
+        </div>
+    </aside>
+
+    <div class="checkout-channel-overlay" id="checkout-channel-overlay" aria-hidden="true"></div>
+    <div class="checkout-channel-modal" id="checkout-channel-modal" role="dialog" aria-modal="true" aria-labelledby="checkout-channel-title" aria-hidden="true">
+        <h2 id="checkout-channel-title">كيف تريد إرسال الطلب؟</h2>
+        <p class="checkout-channel-desc">اختر الطريقة المناسبة — سنوجّهك للخطوة التالية.</p>
+        <div class="checkout-channel-actions">
+            <button type="button" class="btn btn-primary btn-block" id="checkout-ch-whatsapp">
+                <span class="checkout-channel-icon" aria-hidden="true">📱</span> واتساب
+            </button>
+            <button type="button" class="btn btn-ghost btn-block" id="checkout-ch-email">
+                <span class="checkout-channel-icon" aria-hidden="true">✉️</span> البريد الإلكتروني
+            </button>
+            <button type="button" class="btn btn-outline btn-block" id="checkout-ch-cancel">إلغاء</button>
+        </div>
+    </div>
+
+    <div class="rating-confirm-overlay" id="rating-confirm-overlay" aria-hidden="true"></div>
+    <div class="rating-confirm-modal" id="rating-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="rating-confirm-title" aria-hidden="true">
+        <h2 id="rating-confirm-title">تأكيد الإرسال</h2>
+        <p class="rating-confirm-lead">تأكيدك يساعدنا على معرفة رأيك بصدق. لن يُرسل أي تقييم قبل أن تضغط «تأكيد الإرسال».</p>
+        <p class="rating-confirm-question" id="rating-confirm-question"></p>
+        <p class="rating-confirm-subhint">سيصل الملخص إلى بريد المسؤول عن الموقع فقط.</p>
+        <div class="rating-confirm-actions">
+            <button type="button" class="btn btn-primary btn-block" id="rating-confirm-yes">تأكيد الإرسال</button>
+            <button type="button" class="btn btn-ghost btn-block" id="rating-confirm-no">رجوع دون إرسال</button>
+        </div>
+    </div>
+
+    <div class="site-feedback-overlay" id="site-feedback-overlay" aria-hidden="true"></div>
+    <div class="site-feedback-modal" id="site-feedback-modal" role="dialog" aria-modal="true" aria-labelledby="site-feedback-title" aria-hidden="true">
+        <h2 id="site-feedback-title">تجربة الموقع</h2>
+        <div id="site-feedback-question-block">
+            <p class="site-feedback-desc">بعد إتمام طلبك… هل استمتعت بتصفّح موقعنا؟</p>
+            <div class="site-feedback-actions" id="site-feedback-actions">
+                <button type="button" class="btn btn-primary btn-block" id="site-feedback-yes">نعم، استمتعت</button>
+                <button type="button" class="btn btn-ghost btn-block" id="site-feedback-no">ليس كثيراً</button>
+                <button type="button" class="btn btn-outline btn-block" id="site-feedback-skip">تخطّي</button>
+            </div>
+        </div>
+        <div id="site-feedback-thanks" class="site-feedback-thanks" hidden>
+            <p class="site-feedback-thanks-msg" id="site-feedback-thanks-msg" role="status"></p>
+            <button type="button" class="btn btn-primary btn-block" id="site-feedback-close">إغلاق</button>
+        </div>
+    </div>
+
+    <div class="inventory-admin-overlay" id="inventory-admin-overlay" aria-hidden="true"></div>
+    <div class="inventory-admin-modal" id="inventory-admin-modal" role="dialog" aria-modal="true" aria-labelledby="inventory-admin-title" aria-hidden="true">
+        <button type="button" class="inventory-admin-close" id="inventory-admin-close" aria-label="إغلاق">×</button>
+        <h2 id="inventory-admin-title">إدارة المنتجات والمخزون</h2>
+        <p class="inventory-admin-desc">أضف حلويات جديدة أو حدّد المنتجات المنتهية ليُمنع طلبها تلقائياً.</p>
+
+        <form id="inventory-add-form" class="inventory-add-form">
+            <h3>إضافة حلوى جديدة</h3>
+            <label for="inventory-add-name">اسم الحلوى</label>
+            <input type="text" id="inventory-add-name" name="name" placeholder="مثال: شوكولاتة بندق" required>
+            <label for="inventory-add-price">السعر (شيكل)</label>
+            <input type="number" id="inventory-add-price" name="price" min="0" step="0.01" placeholder="مثال: 3.50" required>
+            <label for="inventory-add-desc">وصف مختصر (اختياري)</label>
+            <textarea id="inventory-add-desc" name="desc" rows="2" placeholder="نكهة مميزة وتغليف أنيق"></textarea>
+            <label for="inventory-add-image">رابط الصورة (اختياري)</label>
+            <input type="url" id="inventory-add-image" name="image" placeholder="https://example.com/sweet.jpg" inputmode="url">
+            <button type="submit" class="btn btn-primary btn-block">إضافة للحلويات</button>
+        </form>
+
+        <div class="inventory-stock-block">
+            <h3>حالة المخزون</h3>
+            <p class="inventory-stock-note">فعّل خيار «نفد المخزون» لإيقاف زر الطلب.</p>
+            <div class="inventory-stock-list" id="inventory-stock-list"></div>
+        </div>
+
+    </div>
+
+    <div class="inventory-auth-overlay" id="inventory-auth-overlay" aria-hidden="true"></div>
+    <div class="inventory-auth-modal" id="inventory-auth-modal" role="dialog" aria-modal="true" aria-labelledby="inventory-auth-title" aria-hidden="true">
+        <h2 id="inventory-auth-title">تحقق الإدارة</h2>
+        <p class="inventory-auth-desc" id="inventory-auth-desc">أدخل بيانات التحقق للمتابعة.</p>
+        <label for="inventory-auth-input" class="inventory-auth-label" id="inventory-auth-label">القيمة المطلوبة</label>
+        <input type="password" id="inventory-auth-input" class="inventory-auth-input" autocomplete="one-time-code" inputmode="numeric" maxlength="24">
+        <p class="inventory-auth-hint" id="inventory-auth-hint" hidden></p>
+        <div class="inventory-auth-actions">
+            <button type="button" class="btn btn-primary btn-block" id="inventory-auth-submit">متابعة</button>
+            <button type="button" class="btn btn-ghost btn-block" id="inventory-auth-resend" hidden>إعادة إرسال الكود</button>
+            <button type="button" class="btn btn-outline btn-block" id="inventory-auth-cancel">إلغاء</button>
+        </div>
+    </div>
+
+    <div class="visitor-name-overlay" id="visitor-name-overlay" aria-hidden="true"></div>
+    <div class="visitor-name-modal" id="visitor-name-modal" role="dialog" aria-modal="true" aria-labelledby="visitor-name-title" aria-hidden="true">
+        <h2 id="visitor-name-title">أهلاً وسهلاً بك</h2>
+        <p class="visitor-name-desc">حتى نرحب بك بشكل أجمل، اكتب اسمك:</p>
+        <form id="visitor-name-form" class="visitor-name-form">
+            <label for="visitor-name-input">الاسم</label>
+            <input type="text" id="visitor-name-input" name="visitorName" placeholder="اكتب اسمك هنا" maxlength="40" autocomplete="name" required>
+            <button type="submit" class="btn btn-primary btn-block">متابعة</button>
+        </form>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+
+    <script>
+        window.SWETTY_API_BASE = window.SWETTY_API_BASE || "";
+    </script>
+    <script src="js/script.js"></script>
+</body>
+</html>
+
+
+
