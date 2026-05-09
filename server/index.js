@@ -127,6 +127,33 @@ app.post("/api/inventory/sweets", async (req, res) => {
   }
 });
 
+app.delete("/api/inventory/sweets/:id", async (req, res) => {
+  try {
+    const id = String(req.params?.id || "").trim();
+    if (!id) {
+      return res.status(400).json({ ok: false, error: "invalid_sweet_id" });
+    }
+    const db = await readInventoryDb();
+    const before = db.customSweets.length;
+    db.customSweets = db.customSweets.filter((it) => it.id !== id);
+    if (db.stockState[id]) {
+      delete db.stockState[id];
+    }
+    if (db.customSweets.length === before) {
+      return res.status(404).json({ ok: false, error: "sweet_not_found" });
+    }
+    const saved = await writeInventoryDb(db);
+    return res.json({
+      ok: true,
+      customSweets: saved.customSweets,
+      stockState: saved.stockState,
+    });
+  } catch (err) {
+    console.error("Delete sweet failed:", err);
+    return res.status(500).json({ ok: false, error: "inventory_delete_sweet_failed" });
+  }
+});
+
 app.post("/api/inventory/stock", async (req, res) => {
   try {
     const stockState = normalizeStockState(req.body?.stockState);

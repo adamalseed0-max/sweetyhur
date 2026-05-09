@@ -1062,13 +1062,21 @@
         }
         list.innerHTML = "";
         ids.forEach(function (id) {
-            var row = document.createElement("label");
+            var row = document.createElement("div");
             row.className = "inventory-stock-row";
+            var canDelete = id.indexOf("sweet-custom-") === 0;
             row.innerHTML =
                 '<span class="inventory-stock-name"></span>' +
+                '<span class="inventory-stock-actions">' +
                 '<span class="inventory-stock-toggle"><input type="checkbox" data-stock-id="' +
                 id +
-                '"> نفد المخزون</span>';
+                '"> نفد من المخزون</span>' +
+                (canDelete
+                    ? '<button type="button" class="inventory-delete-btn" data-delete-id="' +
+                      id +
+                      '">حذف من المخزن</button>'
+                    : "") +
+                "</span>";
             row.querySelector(".inventory-stock-name").textContent = items[id];
             var cb = row.querySelector('input[type="checkbox"]');
             cb.checked = !!stockState[id];
@@ -1782,6 +1790,34 @@
                 }).catch(function () {
                     setToast("تعذّر مزامنة المخزون الآن، تم حفظه محلياً");
                 });
+            });
+            stockList.addEventListener("click", function (e) {
+                var delBtn = e.target.closest("button[data-delete-id]");
+                if (!delBtn) return;
+                var id = (delBtn.getAttribute("data-delete-id") || "").trim();
+                if (!id) return;
+                var ok = window.confirm("هل تريد حذف هذا المنتج من المخزن؟");
+                if (!ok) return;
+                delBtn.disabled = true;
+                fetchJson(INVENTORY_API_BASE + "/api/inventory/sweets/" + encodeURIComponent(id), {
+                    method: "DELETE"
+                })
+                    .then(function (data) {
+                        var remoteList = Array.isArray(data.customSweets) ? data.customSweets : [];
+                        var remoteStock = data.stockState && typeof data.stockState === "object" ? data.stockState : {};
+                        saveCustomSweets(remoteList);
+                        saveStockState(remoteStock);
+                        injectCustomSweetsToGrid(remoteList);
+                        bindAddToCartButtons();
+                        wireProductInterestButtons();
+                        renderInventoryStockList();
+                        applyStockStateToUI();
+                        setToast("تم حذف المنتج من المخزن");
+                    })
+                    .catch(function () {
+                        delBtn.disabled = false;
+                        setToast("تعذّر حذف المنتج من السيرفر");
+                    });
             });
         }
         if (addForm) {
