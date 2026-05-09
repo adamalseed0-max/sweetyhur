@@ -1314,6 +1314,36 @@ body.coffee-moment-open {
         transform 0.2s ease;
 }
 
+.header-tools .interest-toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--color-ink);
+    cursor: pointer;
+    transition:
+        background var(--transition),
+        color var(--transition),
+        transform 0.2s ease;
+}
+
+.header-tools .interest-toggle:hover,
+.header-tools .interest-toggle:focus-visible {
+    background: rgba(190, 24, 93, 0.12);
+    color: var(--color-rose);
+    transform: scale(1.05);
+}
+
+.header-tools .interest-toggle:focus-visible {
+    outline: 2px solid var(--color-rose);
+    outline-offset: 2px;
+}
+
 .header-tools .inventory-admin-trigger:hover,
 .header-tools .inventory-admin-trigger:focus-visible {
     background: rgba(180, 83, 9, 0.12);
@@ -1373,6 +1403,115 @@ body.cart-open {
 .cart-drawer.is-open {
     transform: translateX(0);
     visibility: visible;
+}
+
+body.interest-open {
+    overflow: hidden;
+}
+
+.interest-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 260;
+    background: rgba(28, 25, 23, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.interest-overlay.is-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.interest-modal {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.96);
+    z-index: 261;
+    width: min(94vw, 520px);
+    background: var(--color-surface);
+    border-radius: 18px;
+    box-shadow: 0 28px 60px rgba(28, 25, 23, 0.24);
+    padding: 1rem 1rem 0.9rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.25s ease, opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.interest-modal.is-open {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.interest-modal h2 {
+    margin: 0 0 0.55rem;
+    text-align: center;
+    font-size: 1.2rem;
+}
+
+.interest-list {
+    display: grid;
+    gap: 0.45rem;
+    margin: 0.55rem 0 0.8rem;
+    max-height: min(52vh, 360px);
+    overflow: auto;
+    padding-inline-end: 0.15rem;
+}
+
+.interest-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.55rem;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 0.45rem 0.6rem;
+    background: #fff;
+}
+
+.interest-name {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--color-ink);
+    line-height: 1.35;
+}
+
+.interest-open-item {
+    border: 0;
+    background: transparent;
+    text-align: right;
+    font: inherit;
+    color: var(--color-ink);
+    font-size: 0.92rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+}
+
+.interest-open-item:hover {
+    color: var(--color-rose);
+    text-decoration: underline;
+}
+
+.interest-remove {
+    border: 1px solid #fecaca;
+    background: #fff1f2;
+    color: #be123c;
+    border-radius: 999px;
+    padding: 0.2rem 0.62rem;
+    font-size: 0.76rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.interest-focus-hit {
+    outline: 2px solid rgba(190, 24, 93, 0.4);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 6px rgba(190, 24, 93, 0.12);
+    transition: box-shadow 0.25s ease, outline-color 0.25s ease;
 }
 
 .cart-drawer-head {
@@ -1942,6 +2081,21 @@ body.inventory-admin-open {
     line-height: 1.35;
 }
 
+.inventory-stock-name-btn {
+    border: 0;
+    background: transparent;
+    text-align: right;
+    cursor: pointer;
+    color: inherit;
+    padding: 0;
+    font: inherit;
+}
+
+.inventory-stock-name-btn:hover {
+    color: var(--color-rose);
+    text-decoration: underline;
+}
+
 .inventory-stock-toggle {
     display: inline-flex;
     align-items: center;
@@ -1976,6 +2130,49 @@ body.inventory-admin-open {
 .inventory-delete-btn[disabled] {
     opacity: 0.65;
     cursor: not-allowed;
+}
+
+.inventory-edit-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 336;
+    background: rgba(28, 25, 23, 0.56);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.inventory-edit-overlay.is-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.inventory-edit-modal {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.96);
+    z-index: 337;
+    width: min(92vw, 500px);
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 26px 60px rgba(28, 25, 23, 0.24);
+    padding: 1.05rem 1rem 0.9rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.25s ease, opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.inventory-edit-modal.is-open {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.inventory-edit-modal h2 {
+    margin: 0 0 0.7rem;
+    text-align: center;
+    font-size: 1.24rem;
 }
 
 .add-to-cart.is-out-of-stock,

@@ -10,6 +10,7 @@
     var formStatus = document.getElementById("form-status");
     var revealEls = document.querySelectorAll(".reveal");
     var VISITOR_NAME_KEY = "sh_visitor_name";
+    var INTEREST_ITEMS_KEY = "sh_interest_items_v1";
 
     function normalizeVisitorApiValue(raw) {
         if (typeof raw === "number" && !isNaN(raw)) return raw;
@@ -139,6 +140,258 @@
                 toast.setAttribute("hidden", "");
             }, 350);
         }, 3200);
+    }
+
+    function loadInterestItems() {
+        try {
+            var raw = localStorage.getItem(INTEREST_ITEMS_KEY);
+            var arr = raw ? JSON.parse(raw) : [];
+            if (!Array.isArray(arr)) return [];
+            return arr
+                .map(function (it) {
+                    if (!it) return null;
+                    if (typeof it === "string") {
+                        return { name: it, id: "", page: "", at: 0 };
+                    }
+                    if (typeof it !== "object") return null;
+                    return {
+                        name: String(it.name || "").trim(),
+                        id: String(it.id || "").trim(),
+                        page: String(it.page || "").trim(),
+                        at: Number(it.at || 0)
+                    };
+                })
+                .filter(function (it) {
+                    return it && it.name;
+                });
+        } catch (err) {
+            return [];
+        }
+    }
+
+    function saveInterestItems(items) {
+        try {
+            localStorage.setItem(INTEREST_ITEMS_KEY, JSON.stringify(Array.isArray(items) ? items : []));
+        } catch (err) {}
+    }
+
+    function updateInterestBadge() {
+        var badge = document.getElementById("interest-badge");
+        if (!badge) return;
+        var items = loadInterestItems();
+        if (!items.length) {
+            badge.setAttribute("hidden", "");
+            badge.textContent = "0";
+            return;
+        }
+        badge.textContent = String(items.length);
+        badge.removeAttribute("hidden");
+    }
+
+    function renderInterestList() {
+        var list = document.getElementById("interest-list");
+        var empty = document.getElementById("interest-empty");
+        if (!list || !empty) return;
+        var items = loadInterestItems();
+        list.innerHTML = "";
+        if (!items.length) {
+            empty.removeAttribute("hidden");
+            return;
+        }
+        empty.setAttribute("hidden", "");
+        items.forEach(function (item) {
+            if (!item || !item.name) return;
+            var row = document.createElement("div");
+            row.className = "interest-row";
+            row.innerHTML =
+                '<button type="button" class="interest-open-item" data-interest-id="" data-interest-name="" data-interest-page=""></button>' +
+                '<button type="button" class="interest-remove" data-interest-name="">حذف</button>';
+            var openBtn = row.querySelector(".interest-open-item");
+            openBtn.textContent = item.name;
+            openBtn.setAttribute("data-interest-id", item.id || "");
+            openBtn.setAttribute("data-interest-name", item.name || "");
+            openBtn.setAttribute("data-interest-page", item.page || "");
+            row.querySelector(".interest-remove").setAttribute("data-interest-name", item.name);
+            list.appendChild(row);
+        });
+    }
+
+    function getCurrentPageName() {
+        var p = window.location.pathname || "";
+        var file = p.split("/").pop() || "";
+        return file || "index.html";
+    }
+
+    function clearFocusInterestQuery() {
+        try {
+            var url = new URL(window.location.href);
+            if (!url.searchParams.has("focusInterest")) return;
+            url.searchParams.delete("focusInterest");
+            window.history.replaceState({}, "", url.pathname + (url.search ? url.search : "") + url.hash);
+        } catch (ignore) {}
+    }
+
+    function highlightFocusedProduct(el) {
+        if (!el) return;
+        var root = el.closest(".product-card") || el.closest(".coffee-bag-option") || el;
+        if (!root) return;
+        root.classList.add("interest-focus-hit");
+        window.setTimeout(function () {
+            root.classList.remove("interest-focus-hit");
+        }, 1800);
+        root.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function focusInterestItem(item) {
+        if (!item) return false;
+        var id = String(item.id || "").trim();
+        var name = String(item.name || "").trim();
+        var page = String(item.page || "").trim();
+        var currentPage = getCurrentPageName();
+        if (page && page !== currentPage) {
+            var target = page + "?focusInterest=" + encodeURIComponent(id || name);
+            window.location.href = target;
+            return true;
+        }
+        var targetEl = null;
+        if (id) {
+            targetEl = document.querySelector('.add-to-cart[data-id="' + id + '"]');
+            if (!targetEl) targetEl = document.querySelector('input[name="coffee-grind-bag"][data-id="' + id + '"]');
+        }
+        if (!targetEl && name) {
+            targetEl = document.querySelector('.add-to-cart[data-name="' + name + '"]');
+            if (!targetEl) targetEl = document.querySelector('.product-interest[data-name="' + name + '"]');
+        }
+        if (!targetEl) return false;
+        highlightFocusedProduct(targetEl);
+        return true;
+    }
+
+    function focusInterestFromQueryIfAny() {
+        try {
+            var q = new URLSearchParams(window.location.search).get("focusInterest");
+            if (!q) return;
+            var items = loadInterestItems();
+            var item =
+                items.find(function (it) {
+                    return it && (it.id === q || it.name === q);
+                }) || { id: q, name: q, page: "" };
+            window.setTimeout(function () {
+                focusInterestItem(item);
+                clearFocusInterestQuery();
+            }, 300);
+        } catch (ignore) {}
+    }
+
+    function openInterestModal() {
+        var o = document.getElementById("interest-overlay");
+        var m = document.getElementById("interest-modal");
+        if (!o || !m) return;
+        renderInterestList();
+        o.classList.add("is-visible");
+        m.classList.add("is-open");
+        o.setAttribute("aria-hidden", "false");
+        m.setAttribute("aria-hidden", "false");
+        document.body.classList.add("interest-open");
+    }
+
+    function closeInterestModal() {
+        var o = document.getElementById("interest-overlay");
+        var m = document.getElementById("interest-modal");
+        if (!o || !m) return;
+        o.classList.remove("is-visible");
+        m.classList.remove("is-open");
+        o.setAttribute("aria-hidden", "true");
+        m.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("interest-open");
+    }
+
+    function ensureInterestUI() {
+        var tools = document.querySelector(".header-tools");
+        if (tools && !document.getElementById("interest-open")) {
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "interest-toggle";
+            btn.id = "interest-open";
+            btn.setAttribute("aria-haspopup", "dialog");
+            btn.setAttribute("aria-controls", "interest-modal");
+            btn.setAttribute("aria-label", "المنتجات المهتم بها");
+            btn.setAttribute("title", "المنتجات المهتم بها");
+            btn.innerHTML =
+                '<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="m12 21.35-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09A6.1 6.1 0 0 1 16.5 3C19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54z"/></svg>' +
+                '<span class="cart-toggle-count" id="interest-badge" hidden>0</span>';
+            var cartBtn = tools.querySelector("#cart-toggle");
+            if (cartBtn && cartBtn.nextSibling) tools.insertBefore(btn, cartBtn.nextSibling);
+            else tools.insertBefore(btn, tools.firstChild);
+        }
+        if (!document.getElementById("interest-modal")) {
+            var wrap = document.createElement("div");
+            wrap.innerHTML =
+                '<div class="interest-overlay" id="interest-overlay" aria-hidden="true"></div>' +
+                '<div class="interest-modal" id="interest-modal" role="dialog" aria-modal="true" aria-labelledby="interest-title" aria-hidden="true">' +
+                '<button type="button" class="inventory-admin-close" id="interest-close" aria-label="إغلاق">×</button>' +
+                '<h2 id="interest-title">المنتجات المهتم بها</h2>' +
+                '<p class="inventory-stock-note">هذه المنتجات التي ضغطت عليها في زر «مهتم».</p>' +
+                '<div id="interest-empty" class="inventory-stock-note">لا توجد منتجات مهتم بها حتى الآن.</div>' +
+                '<div id="interest-list" class="interest-list"></div>' +
+                '<button type="button" class="btn btn-outline btn-block" id="interest-clear">حذف الكل</button>' +
+                "</div>";
+            while (wrap.firstChild) document.body.appendChild(wrap.firstChild);
+        }
+        var openBtn = document.getElementById("interest-open");
+        var closeBtn = document.getElementById("interest-close");
+        var overlay = document.getElementById("interest-overlay");
+        var list = document.getElementById("interest-list");
+        var clearBtn = document.getElementById("interest-clear");
+        if (openBtn && openBtn.getAttribute("data-interest-open-bound") !== "1") {
+            openBtn.setAttribute("data-interest-open-bound", "1");
+            openBtn.addEventListener("click", openInterestModal);
+        }
+        if (closeBtn && closeBtn.getAttribute("data-interest-close-bound") !== "1") {
+            closeBtn.setAttribute("data-interest-close-bound", "1");
+            closeBtn.addEventListener("click", closeInterestModal);
+        }
+        if (overlay && overlay.getAttribute("data-interest-overlay-bound") !== "1") {
+            overlay.setAttribute("data-interest-overlay-bound", "1");
+            overlay.addEventListener("click", function (e) {
+                if (e.target === overlay) closeInterestModal();
+            });
+        }
+        if (list && list.getAttribute("data-interest-list-bound") !== "1") {
+            list.setAttribute("data-interest-list-bound", "1");
+            list.addEventListener("click", function (e) {
+                var openBtn = e.target.closest("button[data-interest-id], button[data-interest-name]");
+                if (openBtn && openBtn.classList.contains("interest-open-item")) {
+                    var opened = focusInterestItem({
+                        id: openBtn.getAttribute("data-interest-id") || "",
+                        name: openBtn.getAttribute("data-interest-name") || "",
+                        page: openBtn.getAttribute("data-interest-page") || ""
+                    });
+                    if (opened) closeInterestModal();
+                    return;
+                }
+                var btn = e.target.closest("button[data-interest-name]");
+                if (!btn) return;
+                if (btn.classList.contains("interest-open-item")) return;
+                var name = (btn.getAttribute("data-interest-name") || "").trim();
+                var next = loadInterestItems().filter(function (it) {
+                    return it && it.name !== name;
+                });
+                saveInterestItems(next);
+                renderInterestList();
+                updateInterestBadge();
+            });
+        }
+        if (clearBtn && clearBtn.getAttribute("data-interest-clear-bound") !== "1") {
+            clearBtn.setAttribute("data-interest-clear-bound", "1");
+            clearBtn.addEventListener("click", function () {
+                saveInterestItems([]);
+                renderInterestList();
+                updateInterestBadge();
+            });
+        }
+        updateInterestBadge();
+        focusInterestFromQueryIfAny();
     }
 
     function getVisitorName() {
@@ -649,6 +902,25 @@
 
     function onProductInterestClick(btn) {
         var name = btn.getAttribute("data-name") || "هذا المنتج";
+        var id = (btn.getAttribute("data-id") || "").trim();
+        if (!id) {
+            var card = btn.closest(".product-card");
+            var addBtn = card && card.querySelector(".add-to-cart[data-id]");
+            if (addBtn) id = (addBtn.getAttribute("data-id") || "").trim();
+        }
+        var page = getCurrentPageName();
+        var items = loadInterestItems();
+        var exists = items.some(function (it) {
+            if (!it) return false;
+            if (id && it.id) return it.id === id;
+            return it.name === name && (it.page || "") === page;
+        });
+        if (!exists) {
+            items.unshift({ name: name, id: id, page: page, at: Date.now() });
+            if (items.length > 50) items = items.slice(0, 50);
+            saveInterestItems(items);
+            updateInterestBadge();
+        }
         setToast("تم تسجيل اهتمامك بـ: " + name + " — تواصل معنا لإتمام الطلب");
         var line = "أرغب بالاستفسار عن: " + name;
         var msg = document.getElementById("message");
@@ -677,6 +949,7 @@
     }
 
     wireProductInterestButtons();
+    ensureInterestUI();
 
     if (form && formStatus) {
         form.addEventListener("submit", function (e) {
@@ -734,6 +1007,8 @@
     var STOCK_KEY = "sh_stock_status_v1";
     var CUSTOM_SWEETS_KEY = "sh_custom_sweets_v1";
     var INVENTORY_REGISTRY_KEY = "sh_inventory_registry_v1";
+    var INVENTORY_DELETED_IDS_KEY = "sh_inventory_deleted_ids_v1";
+    var INVENTORY_ITEM_EDITS_KEY = "sh_inventory_item_edits_v1";
     var INVENTORY_ADMIN_PASSWORD = "326476843";
     var INVENTORY_2FA_SESSION_KEY = "sh_inventory_admin_2fa_ok";
     var INVENTORY_ADMIN_PHONE = "+972507209096";
@@ -754,6 +1029,8 @@
     var inventoryAuthContext = null;
     var stockState = loadStockState();
     var inventoryRegistry = loadInventoryRegistry();
+    var deletedItemsState = loadDeletedItemsState();
+    var itemEditsState = loadItemEditsState();
     var cartToggle = document.getElementById("cart-toggle");
     var cartDrawer = document.getElementById("cart-drawer");
     var cartOverlay = document.getElementById("cart-overlay");
@@ -814,6 +1091,40 @@
         } catch (err) {}
     }
 
+    function loadDeletedItemsState() {
+        try {
+            var raw = localStorage.getItem(INVENTORY_DELETED_IDS_KEY);
+            var data = raw ? JSON.parse(raw) : {};
+            return data && typeof data === "object" ? data : {};
+        } catch (err) {
+            return {};
+        }
+    }
+
+    function saveDeletedItemsState(next) {
+        deletedItemsState = next && typeof next === "object" ? next : {};
+        try {
+            localStorage.setItem(INVENTORY_DELETED_IDS_KEY, JSON.stringify(deletedItemsState));
+        } catch (err) {}
+    }
+
+    function loadItemEditsState() {
+        try {
+            var raw = localStorage.getItem(INVENTORY_ITEM_EDITS_KEY);
+            var data = raw ? JSON.parse(raw) : {};
+            return data && typeof data === "object" ? data : {};
+        } catch (err) {
+            return {};
+        }
+    }
+
+    function saveItemEditsState(next) {
+        itemEditsState = next && typeof next === "object" ? next : {};
+        try {
+            localStorage.setItem(INVENTORY_ITEM_EDITS_KEY, JSON.stringify(itemEditsState));
+        } catch (err) {}
+    }
+
     function fetchJson(url, opts) {
         return fetch(url, opts || {}).then(function (res) {
             return res
@@ -842,9 +1153,186 @@
         if (code === "invalid_sweet_id") return "معرّف المنتج غير صالح.";
         if (code === "sweet_not_found") return "المنتج غير موجود أو تم حذفه مسبقاً.";
         if (code === "inventory_delete_sweet_failed") return "تعذّر حذف المنتج من السيرفر.";
+        if (code === "invalid_item_id") return "معرّف العنصر غير صالح.";
+        if (code === "inventory_delete_item_failed") return "تعذّر حذف العنصر من المخزن.";
+        if (code === "inventory_update_item_failed") return "تعذّر تحديث بيانات المنتج على السيرفر.";
         if (err && err.status === 404) return "تعذّر الوصول لخدمة الإدارة (404).";
         if (err && err.status >= 500) return "خدمة الإدارة غير متاحة حالياً. حاول بعد قليل.";
         return fallbackMessage || "حدث خطأ غير متوقع.";
+    }
+
+    function applyDeletedItemsToUI() {
+        var deleted = deletedItemsState || {};
+        Object.keys(deleted).forEach(function (id) {
+            if (!deleted[id]) return;
+            document.querySelectorAll('[data-id="' + id + '"]').forEach(function (node) {
+                var root =
+                    node.closest(".product-card") ||
+                    node.closest("label") ||
+                    node.closest(".coffee-bag-option") ||
+                    node;
+                if (root) {
+                    root.style.display = "none";
+                    root.setAttribute("data-inventory-deleted", "1");
+                }
+            });
+        });
+    }
+
+    function getItemEditState(id) {
+        var e = itemEditsState && itemEditsState[id];
+        return e && typeof e === "object" ? e : {};
+    }
+
+    function getInventoryItemCurrentData(id) {
+        var current = { id: id, name: "", price: "", desc: "", image: "" };
+        var addBtn = document.querySelector('.add-to-cart[data-id="' + id + '"]');
+        if (addBtn) {
+            current.name = (addBtn.getAttribute("data-name") || "").trim();
+            current.price = (addBtn.getAttribute("data-price") || "").trim();
+            var card = addBtn.closest(".product-card");
+            if (card) {
+                var descEl = card.querySelector(".product-desc");
+                var imgEl = card.querySelector(".product-media img");
+                if (descEl) current.desc = (descEl.textContent || "").trim();
+                if (imgEl) current.image = (imgEl.getAttribute("src") || "").trim();
+            }
+        } else {
+            var bagInput = document.querySelector('input[name="coffee-grind-bag"][data-id="' + id + '"]');
+            if (bagInput) {
+                current.name = (bagInput.getAttribute("data-name") || "").trim();
+                current.price = (bagInput.getAttribute("data-price") || "").trim();
+                var bagLabel = bagInput.closest(".coffee-bag-option");
+                if (bagLabel) {
+                    var weightEl = bagLabel.querySelector(".coffee-bag-weight");
+                    if (weightEl) current.desc = (weightEl.textContent || "").trim();
+                }
+            }
+        }
+        var custom = loadCustomSweets().find(function (it) {
+            return it && it.id === id;
+        });
+        if (custom) {
+            current.name = custom.name || current.name;
+            current.price = custom.price != null ? String(custom.price) : current.price;
+            current.desc = custom.desc || current.desc;
+            current.image = custom.image || current.image;
+        }
+        var edit = getItemEditState(id);
+        if (edit.name) current.name = edit.name;
+        if (edit.price != null && edit.price !== "") current.price = String(edit.price);
+        if (edit.desc) current.desc = edit.desc;
+        if (edit.image) current.image = edit.image;
+        return current;
+    }
+
+    function applyItemEditsToUI() {
+        var edits = itemEditsState || {};
+        Object.keys(edits).forEach(function (id) {
+            var edit = edits[id] || {};
+            document.querySelectorAll('.add-to-cart[data-id="' + id + '"]').forEach(function (btn) {
+                if (typeof edit.name === "string" && edit.name.trim()) {
+                    btn.setAttribute("data-name", edit.name.trim());
+                    var card = btn.closest(".product-card");
+                    if (card) {
+                        var title = card.querySelector("h3");
+                        if (title) title.textContent = edit.name.trim();
+                    }
+                }
+                if (edit.price !== undefined && edit.price !== null && edit.price !== "") {
+                    var p = Number(edit.price);
+                    if (!isNaN(p)) {
+                        btn.setAttribute("data-price", String(p));
+                        var priceEl = btn.closest(".product-card") && btn.closest(".product-card").querySelector(".price");
+                        if (priceEl) priceEl.innerHTML = p.toFixed(2) + " <small>شيكل</small>";
+                    }
+                }
+                if (typeof edit.desc === "string") {
+                    var descEl = btn.closest(".product-card") && btn.closest(".product-card").querySelector(".product-desc");
+                    if (descEl) descEl.textContent = edit.desc;
+                }
+                if (typeof edit.image === "string" && edit.image.trim()) {
+                    var imgEl = btn.closest(".product-card") && btn.closest(".product-card").querySelector(".product-media img");
+                    if (imgEl) imgEl.setAttribute("src", edit.image.trim());
+                }
+            });
+            document
+                .querySelectorAll('input[name="coffee-grind-bag"][data-id="' + id + '"]')
+                .forEach(function (input) {
+                    if (typeof edit.name === "string" && edit.name.trim()) input.setAttribute("data-name", edit.name.trim());
+                    if (edit.price !== undefined && edit.price !== null && edit.price !== "") {
+                        var p = Number(edit.price);
+                        if (!isNaN(p)) input.setAttribute("data-price", String(p));
+                    }
+                    var label = input.closest(".coffee-bag-option");
+                    if (label && typeof edit.desc === "string" && edit.desc.trim()) {
+                        var weightEl = label.querySelector(".coffee-bag-weight");
+                        if (weightEl) weightEl.textContent = edit.desc.trim();
+                    }
+                });
+        });
+    }
+
+    function ensureInventoryEditUI() {
+        if (document.getElementById("inventory-item-edit-modal")) return;
+        var wrap = document.createElement("div");
+        wrap.innerHTML =
+            '<div class="inventory-edit-overlay" id="inventory-edit-overlay" aria-hidden="true"></div>' +
+            '<div class="inventory-edit-modal" id="inventory-item-edit-modal" role="dialog" aria-modal="true" aria-labelledby="inventory-edit-title" aria-hidden="true">' +
+            '<button type="button" class="inventory-admin-close" id="inventory-edit-close" aria-label="إغلاق">×</button>' +
+            '<h2 id="inventory-edit-title">تعديل المنتج</h2>' +
+            '<form id="inventory-item-edit-form" class="inventory-add-form">' +
+            '<input type="hidden" id="inventory-edit-id">' +
+            '<label for="inventory-edit-name">اسم المنتج</label>' +
+            '<input type="text" id="inventory-edit-name" required>' +
+            '<label for="inventory-edit-price">السعر (شيكل)</label>' +
+            '<input type="number" id="inventory-edit-price" min="0" step="0.01">' +
+            '<label for="inventory-edit-desc">الوصف</label>' +
+            '<textarea id="inventory-edit-desc" rows="2"></textarea>' +
+            '<label for="inventory-edit-image">رابط الصورة</label>' +
+            '<input type="url" id="inventory-edit-image" inputmode="url">' +
+            '<button type="submit" class="btn btn-primary btn-block">حفظ التعديلات</button>' +
+            "</form>" +
+            "</div>";
+        while (wrap.firstChild) document.body.appendChild(wrap.firstChild);
+    }
+
+    function closeInventoryItemEditModal() {
+        var o = document.getElementById("inventory-edit-overlay");
+        var m = document.getElementById("inventory-item-edit-modal");
+        if (o) {
+            o.classList.remove("is-visible");
+            o.setAttribute("aria-hidden", "true");
+        }
+        if (m) {
+            m.classList.remove("is-open");
+            m.setAttribute("aria-hidden", "true");
+        }
+    }
+
+    function openInventoryItemEditModal(id) {
+        ensureInventoryEditUI();
+        var o = document.getElementById("inventory-edit-overlay");
+        var m = document.getElementById("inventory-item-edit-modal");
+        var idEl = document.getElementById("inventory-edit-id");
+        var nameEl = document.getElementById("inventory-edit-name");
+        var priceEl = document.getElementById("inventory-edit-price");
+        var descEl = document.getElementById("inventory-edit-desc");
+        var imageEl = document.getElementById("inventory-edit-image");
+        if (!o || !m || !idEl || !nameEl || !priceEl || !descEl || !imageEl) return;
+        var data = getInventoryItemCurrentData(id);
+        idEl.value = id;
+        nameEl.value = data.name || "";
+        priceEl.value = data.price || "";
+        descEl.value = data.desc || "";
+        imageEl.value = data.image || "";
+        o.classList.add("is-visible");
+        m.classList.add("is-open");
+        o.setAttribute("aria-hidden", "false");
+        m.setAttribute("aria-hidden", "false");
+        window.setTimeout(function () {
+            nameEl.focus();
+        }, 50);
     }
 
     function loadSharedInventoryState(opts) {
@@ -854,12 +1342,18 @@
                 if (!data || !data.ok) return;
                 var remoteSweets = Array.isArray(data.customSweets) ? data.customSweets : [];
                 var remoteStock = data.stockState && typeof data.stockState === "object" ? data.stockState : {};
+                var remoteDeleted = data.deletedIds && typeof data.deletedIds === "object" ? data.deletedIds : {};
+                var remoteEdits = data.itemEdits && typeof data.itemEdits === "object" ? data.itemEdits : {};
                 saveCustomSweets(remoteSweets);
                 saveStockState(remoteStock);
+                saveDeletedItemsState(remoteDeleted);
+                saveItemEditsState(remoteEdits);
                 injectCustomSweetsToGrid(remoteSweets);
                 registerDiscoveredProducts();
                 bindAddToCartButtons();
                 wireProductInterestButtons();
+                applyItemEditsToUI();
+                applyDeletedItemsToUI();
                 applyStockStateToUI();
                 renderInventoryStockList();
             })
@@ -957,31 +1451,36 @@
             }
             if (interestBtn) {
                 interestBtn.setAttribute("data-name", it.name);
+                interestBtn.setAttribute("data-id", it.id);
             }
             grid.appendChild(card);
         });
     }
 
     function registerDiscoveredProducts() {
-        var map = loadInventoryRegistry();
+        var map = {};
         document.querySelectorAll(".add-to-cart[data-id]").forEach(function (btn) {
             var id = (btn.getAttribute("data-id") || "").trim();
             var name = (btn.getAttribute("data-name") || "").trim();
             if (!id || !name) return;
+            if (deletedItemsState[id]) return;
             map[id] = name;
         });
         document.querySelectorAll('input[name="coffee-grind-bag"][data-id]').forEach(function (input) {
             var id = (input.getAttribute("data-id") || "").trim();
             var name = (input.getAttribute("data-name") || "").trim();
             if (!id || !name) return;
+            if (deletedItemsState[id]) return;
             map[id] = name;
         });
         loadCustomSweets().forEach(function (it) {
             if (!it || !it.id || !it.name) return;
+            if (deletedItemsState[it.id]) return;
             map[it.id] = it.name;
         });
         loadCart().forEach(function (it) {
             if (!it || !it.id || !it.name) return;
+            if (deletedItemsState[it.id]) return;
             map[it.id] = it.name;
         });
         saveInventoryRegistry(map);
@@ -1079,20 +1578,19 @@
         ids.forEach(function (id) {
             var row = document.createElement("div");
             row.className = "inventory-stock-row";
-            var canDelete = id.indexOf("sweet-custom-") === 0;
             row.innerHTML =
-                '<span class="inventory-stock-name"></span>' +
+                '<button type="button" class="inventory-stock-name inventory-stock-name-btn" data-edit-id="' +
+                id +
+                '"></button>' +
                 '<span class="inventory-stock-actions">' +
                 '<span class="inventory-stock-toggle"><input type="checkbox" data-stock-id="' +
                 id +
                 '"> نفد من المخزون</span>' +
-                (canDelete
-                    ? '<button type="button" class="inventory-delete-btn" data-delete-id="' +
-                      id +
-                      '">حذف من المخزن</button>'
-                    : "") +
+                '<button type="button" class="inventory-delete-btn" data-delete-id="' +
+                id +
+                '">حذف من المخزن</button>' +
                 "</span>";
-            row.querySelector(".inventory-stock-name").textContent = items[id];
+            row.querySelector(".inventory-stock-name-btn").textContent = items[id];
             var cb = row.querySelector('input[type="checkbox"]');
             cb.checked = !!stockState[id];
             list.appendChild(row);
@@ -1711,6 +2209,11 @@
         var overlay = document.getElementById("inventory-admin-overlay");
         var stockList = document.getElementById("inventory-stock-list");
         var addForm = document.getElementById("inventory-add-form");
+        ensureInventoryEditUI();
+        var editOverlay = document.getElementById("inventory-edit-overlay");
+        var editModal = document.getElementById("inventory-item-edit-modal");
+        var editClose = document.getElementById("inventory-edit-close");
+        var editForm = document.getElementById("inventory-item-edit-form");
 
         if (openBtn) {
             openBtn.addEventListener("click", function () {
@@ -1730,6 +2233,21 @@
                 if (e.target === overlay) {
                     closeInventoryAdminModal();
                 }
+            });
+        }
+        if (editOverlay) {
+            editOverlay.addEventListener("click", function (e) {
+                if (e.target === editOverlay) closeInventoryItemEditModal();
+            });
+        }
+        if (editClose) {
+            editClose.addEventListener("click", function () {
+                closeInventoryItemEditModal();
+            });
+        }
+        if (editModal) {
+            editModal.addEventListener("keydown", function (e) {
+                if (e.key === "Escape") closeInventoryItemEditModal();
             });
         }
         var authOverlay = document.getElementById("inventory-auth-overlay");
@@ -1813,6 +2331,12 @@
                 });
             });
             stockList.addEventListener("click", function (e) {
+                var editBtn = e.target.closest("button[data-edit-id]");
+                if (editBtn) {
+                    var editId = (editBtn.getAttribute("data-edit-id") || "").trim();
+                    if (editId) openInventoryItemEditModal(editId);
+                    return;
+                }
                 var delBtn = e.target.closest("button[data-delete-id]");
                 if (!delBtn) return;
                 var id = (delBtn.getAttribute("data-delete-id") || "").trim();
@@ -1820,17 +2344,23 @@
                 var ok = window.confirm("هل تريد حذف هذا المنتج من المخزن؟");
                 if (!ok) return;
                 delBtn.disabled = true;
-                fetchJson(INVENTORY_API_BASE + "/api/inventory/sweets/" + encodeURIComponent(id), {
+                fetchJson(INVENTORY_API_BASE + "/api/inventory/items/" + encodeURIComponent(id), {
                     method: "DELETE"
                 })
                     .then(function (data) {
                         var remoteList = Array.isArray(data.customSweets) ? data.customSweets : [];
                         var remoteStock = data.stockState && typeof data.stockState === "object" ? data.stockState : {};
+                        var remoteDeleted = data.deletedIds && typeof data.deletedIds === "object" ? data.deletedIds : {};
+                        var remoteEdits = data.itemEdits && typeof data.itemEdits === "object" ? data.itemEdits : {};
                         saveCustomSweets(remoteList);
                         saveStockState(remoteStock);
+                        saveDeletedItemsState(remoteDeleted);
+                        saveItemEditsState(remoteEdits);
                         injectCustomSweetsToGrid(remoteList);
                         bindAddToCartButtons();
                         wireProductInterestButtons();
+                        applyItemEditsToUI();
+                        applyDeletedItemsToUI();
                         renderInventoryStockList();
                         applyStockStateToUI();
                         setToast("تم حذف المنتج من المخزن");
@@ -1838,6 +2368,49 @@
                     .catch(function (err) {
                         delBtn.disabled = false;
                         setToast(getInventoryApiErrorMessage(err, "تعذّر حذف المنتج من السيرفر."));
+                    });
+            });
+        }
+        if (editForm) {
+            editForm.addEventListener("submit", function (e) {
+                e.preventDefault();
+                var idEl = document.getElementById("inventory-edit-id");
+                var nameEl = document.getElementById("inventory-edit-name");
+                var priceEl = document.getElementById("inventory-edit-price");
+                var descEl = document.getElementById("inventory-edit-desc");
+                var imageEl = document.getElementById("inventory-edit-image");
+                if (!idEl || !nameEl || !priceEl || !descEl || !imageEl) return;
+                var id = (idEl.value || "").trim();
+                var name = (nameEl.value || "").trim();
+                var priceRaw = (priceEl.value || "").trim();
+                var desc = (descEl.value || "").trim();
+                var image = (imageEl.value || "").trim();
+                if (!id || !name) {
+                    setToast("الاسم مطلوب لحفظ التعديل");
+                    return;
+                }
+                var payload = {
+                    name: name,
+                    price: priceRaw === "" ? "" : Number(priceRaw),
+                    desc: desc,
+                    image: image
+                };
+                fetchJson(INVENTORY_API_BASE + "/api/inventory/items/" + encodeURIComponent(id), {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                })
+                    .then(function (data) {
+                        var remoteEdits = data.itemEdits && typeof data.itemEdits === "object" ? data.itemEdits : {};
+                        saveItemEditsState(remoteEdits);
+                        applyItemEditsToUI();
+                        renderInventoryStockList();
+                        applyStockStateToUI();
+                        closeInventoryItemEditModal();
+                        setToast("تم تحديث بيانات المنتج");
+                    })
+                    .catch(function (err) {
+                        setToast(getInventoryApiErrorMessage(err, "تعذّر حفظ تعديل المنتج."));
                     });
             });
         }
@@ -1890,10 +2463,16 @@
                 })
                     .then(function (data) {
                         var remoteList = Array.isArray(data.customSweets) ? data.customSweets : list;
+                        var remoteDeleted = data.deletedIds && typeof data.deletedIds === "object" ? data.deletedIds : {};
+                        var remoteEdits = data.itemEdits && typeof data.itemEdits === "object" ? data.itemEdits : {};
                         saveCustomSweets(remoteList);
+                        saveDeletedItemsState(remoteDeleted);
+                        saveItemEditsState(remoteEdits);
                         injectCustomSweetsToGrid(remoteList);
                         wireProductInterestButtons();
                         bindAddToCartButtons();
+                        applyItemEditsToUI();
+                        applyDeletedItemsToUI();
                         renderInventoryStockList();
                         applyStockStateToUI();
                         addForm.reset();
@@ -1906,7 +2485,9 @@
         }
     })();
 
+    applyItemEditsToUI();
     applyStockStateToUI();
+    applyDeletedItemsToUI();
     renderCart();
     loadSharedInventoryState();
     startSharedInventorySync();

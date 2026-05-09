@@ -36,6 +36,8 @@ app.use(express.json());
 const defaultInventoryDb = {
   customSweets: [],
   stockState: {},
+  deletedIds: {},
+  itemEdits: {},
 };
 
 function normalizeSweet(item) {
@@ -60,6 +62,50 @@ function normalizeStockState(input) {
   return out;
 }
 
+function normalizeDeletedIds(input) {
+  const out = {};
+  if (!input || typeof input !== "object") return out;
+  Object.keys(input).forEach((key) => {
+    const id = String(key || "").trim();
+    if (!id) return;
+    if (input[key]) out[id] = true;
+  });
+  return out;
+}
+
+function normalizeItemEdits(input) {
+  const out = {};
+  if (!input || typeof input !== "object") return out;
+  Object.keys(input).forEach((key) => {
+    const id = String(key || "").trim();
+    if (!id) return;
+    const val = input[key];
+    if (!val || typeof val !== "object") return;
+    const next = {};
+    if (typeof val.name === "string") next.name = val.name.trim();
+    if (val.price !== undefined && val.price !== null && val.price !== "") {
+      const p = Number(val.price);
+      if (Number.isFinite(p) && p >= 0) next.price = p;
+    }
+    if (typeof val.desc === "string") next.desc = val.desc.trim();
+    if (typeof val.image === "string") next.image = val.image.trim();
+    out[id] = next;
+  });
+  return out;
+}
+
+function deleteInventoryItemById(db, id) {
+  const next = db && typeof db === "object" ? db : { ...defaultInventoryDb };
+  next.customSweets = Array.isArray(next.customSweets) ? next.customSweets : [];
+  next.stockState = normalizeStockState(next.stockState);
+  next.deletedIds = normalizeDeletedIds(next.deletedIds);
+  next.customSweets = next.customSweets.filter((it) => it && it.id !== id);
+  if (next.stockState[id]) delete next.stockState[id];
+  next.deletedIds[id] = true;
+  if (next.itemEdits && next.itemEdits[id]) delete next.itemEdits[id];
+  return next;
+}
+
 async function readInventoryDb() {
   try {
     const raw = await fs.readFile(dbPath, "utf8");
@@ -69,6 +115,8 @@ async function readInventoryDb() {
         ? parsed.customSweets.map(normalizeSweet).filter(Boolean)
         : [],
       stockState: normalizeStockState(parsed?.stockState),
+      deletedIds: normalizeDeletedIds(parsed?.deletedIds),
+      itemEdits: normalizeItemEdits(parsed?.itemEdits),
     };
   } catch (_err) {
     return { ...defaultInventoryDb };
@@ -81,6 +129,8 @@ async function writeInventoryDb(nextDb) {
       ? nextDb.customSweets.map(normalizeSweet).filter(Boolean)
       : [],
     stockState: normalizeStockState(nextDb?.stockState),
+    deletedIds: normalizeDeletedIds(nextDb?.deletedIds),
+    itemEdits: normalizeItemEdits(nextDb?.itemEdits),
   };
   await fs.writeFile(dbPath, JSON.stringify(safeDb, null, 2), "utf8");
   return safeDb;
@@ -114,13 +164,21 @@ app.post("/api/inventory/sweets", async (req, res) => {
       return res.status(400).json({ ok: false, error: "invalid_sweet_payload" });
     }
     const db = await readInventoryDb();
+    if (db.deletedIds && db.deletedIds[sweet.id]) {
+      delete db.deletedIds[sweet.id];
+    }
     const exists = db.customSweets.some((it) => it.id === sweet.id);
     if (exists) {
       return res.status(409).json({ ok: false, error: "sweet_id_exists" });
     }
     db.customSweets.push(sweet);
     const saved = await writeInventoryDb(db);
-    return res.json({ ok: true, customSweets: saved.customSweets });
+    return res.json({
+      ok: true,
+      customSweets: saved.customSweets,
+      deletedIds: saved.deletedIds,
+      itemEdits: saved.itemEdits,
+    });
   } catch (err) {
     console.error("Add sweet failed:", err);
     return res.status(500).json({ ok: false, error: "inventory_add_sweet_failed" });
@@ -135,10 +193,7 @@ app.delete("/api/inventory/sweets/:id", async (req, res) => {
     }
     const db = await readInventoryDb();
     const before = db.customSweets.length;
-    db.customSweets = db.customSweets.filter((it) => it.id !== id);
-    if (db.stockState[id]) {
-      delete db.stockState[id];
-    }
+    deleteInventoryItemById(db, id);
     if (db.customSweets.length === before) {
       return res.status(404).json({ ok: false, error: "sweet_not_found" });
     }
@@ -147,10 +202,66 @@ app.delete("/api/inventory/sweets/:id", async (req, res) => {
       ok: true,
       customSweets: saved.customSweets,
       stockState: saved.stockState,
+      deletedIds: saved.deletedIds,
+      itemEdits: saved.itemEdits,
     });
   } catch (err) {
     console.error("Delete sweet failed:", err);
     return res.status(500).json({ ok: false, error: "inventory_delete_sweet_failed" });
+  }
+});
+
+app.delete("/api/inventory/items/:id", async (req, res) => {
+  try {
+    const id = String(req.params?.id || "").trim();
+    if (!id) {
+      return res.status(400).json({ ok: false, error: "invalid_item_id" });
+    }
+    const db = await readInventoryDb();
+    deleteInventoryItemById(db, id);
+    const saved = await writeInventoryDb(db);
+    return res.json({
+      ok: true,
+      customSweets: saved.customSweets,
+      stockState: saved.stockState,
+      deletedIds: saved.deletedIds,
+      itemEdits: saved.itemEdits,
+    });
+  } catch (err) {
+    console.error("Delete inventory item failed:", err);
+    return res.status(500).json({ ok: false, error: "inventory_delete_item_failed" });
+  }
+});
+
+app.post("/api/inventory/items/:id", async (req, res) => {
+  try {
+    const id = String(req.params?.id || "").trim();
+    if (!id) {
+      return res.status(400).json({ ok: false, error: "invalid_item_id" });
+    }
+    const body = req.body && typeof req.body === "object" ? req.body : {};
+    const db = await readInventoryDb();
+    db.itemEdits = normalizeItemEdits(db.itemEdits);
+    db.itemEdits[id] = {
+      name: typeof body.name === "string" ? body.name.trim() : "",
+      price:
+        body.price !== undefined && body.price !== null && body.price !== ""
+          ? Number(body.price)
+          : undefined,
+      desc: typeof body.desc === "string" ? body.desc.trim() : "",
+      image: typeof body.image === "string" ? body.image.trim() : "",
+    };
+    if (!db.itemEdits[id].name) delete db.itemEdits[id].name;
+    if (!Number.isFinite(db.itemEdits[id].price) || db.itemEdits[id].price < 0) {
+      delete db.itemEdits[id].price;
+    }
+    if (!db.itemEdits[id].desc) delete db.itemEdits[id].desc;
+    if (!db.itemEdits[id].image) delete db.itemEdits[id].image;
+    const saved = await writeInventoryDb(db);
+    return res.json({ ok: true, itemEdits: saved.itemEdits });
+  } catch (err) {
+    console.error("Update inventory item failed:", err);
+    return res.status(500).json({ ok: false, error: "inventory_update_item_failed" });
   }
 });
 
