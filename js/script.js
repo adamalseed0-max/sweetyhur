@@ -832,6 +832,20 @@
         });
     }
 
+    function getInventoryApiErrorMessage(err, fallbackMessage) {
+        var code = err && err.payload ? String(err.payload.error || "") : "";
+        if (code === "invalid_sweet_payload") return "بيانات المنتج غير مكتملة. تأكد من الاسم والسعر.";
+        if (code === "sweet_id_exists") return "هذا المنتج مضاف مسبقاً. غيّر الاسم أو أعد المحاولة.";
+        if (code === "inventory_add_sweet_failed") return "تعذّر حفظ المنتج في السيرفر. حاول مرة أخرى.";
+        if (code === "inventory_stock_update_failed") return "تعذّر تحديث حالة المخزون في السيرفر.";
+        if (code === "invalid_sweet_id") return "معرّف المنتج غير صالح.";
+        if (code === "sweet_not_found") return "المنتج غير موجود أو تم حذفه مسبقاً.";
+        if (code === "inventory_delete_sweet_failed") return "تعذّر حذف المنتج من السيرفر.";
+        if (err && err.status === 404) return "تعذّر الوصول لخدمة الإدارة (404).";
+        if (err && err.status >= 500) return "خدمة الإدارة غير متاحة حالياً. حاول بعد قليل.";
+        return fallbackMessage || "حدث خطأ غير متوقع.";
+    }
+
     function loadSharedInventoryState(opts) {
         var options = opts || {};
         return fetchJson(INVENTORY_API_BASE + "/api/inventory")
@@ -1775,6 +1789,7 @@
                 if (!cb) return;
                 var id = cb.getAttribute("data-stock-id");
                 if (!id) return;
+                var wasChecked = !!stockState[id];
                 var next = loadStockState();
                 if (cb.checked) {
                     next[id] = true;
@@ -1787,8 +1802,13 @@
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ stockState: next })
-                }).catch(function () {
-                    setToast("تعذّر مزامنة المخزون الآن، تم حفظه محلياً");
+                }).catch(function (err) {
+                    var rollback = loadStockState();
+                    if (wasChecked) rollback[id] = true;
+                    else delete rollback[id];
+                    saveStockState(rollback);
+                    applyStockStateToUI();
+                    setToast(getInventoryApiErrorMessage(err, "تعذّر مزامنة المخزون مع السيرفر."));
                 });
             });
             stockList.addEventListener("click", function (e) {
@@ -1814,9 +1834,9 @@
                         applyStockStateToUI();
                         setToast("تم حذف المنتج من المخزن");
                     })
-                    .catch(function () {
+                    .catch(function (err) {
                         delBtn.disabled = false;
-                        setToast("تعذّر حذف المنتج من السيرفر");
+                        setToast(getInventoryApiErrorMessage(err, "تعذّر حذف المنتج من السيرفر."));
                     });
             });
         }
@@ -1878,15 +1898,8 @@
                         addForm.reset();
                         setToast("تمت إضافة الحلوى الجديدة للجميع");
                     })
-                    .catch(function () {
-                        saveCustomSweets(list);
-                        injectCustomSweetsToGrid(list);
-                        wireProductInterestButtons();
-                        bindAddToCartButtons();
-                        renderInventoryStockList();
-                        applyStockStateToUI();
-                        addForm.reset();
-                        setToast("تعذّر رفعها للسيرفر، تم حفظها محلياً فقط");
+                    .catch(function (err) {
+                        setToast(getInventoryApiErrorMessage(err, "تعذّر حفظ المنتج في السيرفر."));
                     });
             });
         }
