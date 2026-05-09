@@ -1804,10 +1804,8 @@
                     setToast("أدخل سعراً صحيحاً");
                     return;
                 }
-                var id = "sweet-custom-" + slugifyArabicSafe(name);
-                if (!slugifyArabicSafe(name)) {
-                    id = "sweet-custom-" + String(Date.now());
-                }
+                var baseSlug = slugifyArabicSafe(name);
+                var id = "sweet-custom-" + (baseSlug || "item") + "-" + String(Date.now());
                 var list = loadCustomSweets();
                 var exists = list.some(function (it) {
                     return it && it.id === id;
